@@ -1,0 +1,13 @@
+# Ignore directory 'raw_data'
+raw_data/
+
+# Ignore the Python virtual environment directory
+.venv/
+
+# Ignore specific configuration files
+package.json
+
+package-lock.json
+
+# Ignore node modules directory
+node_modules/
