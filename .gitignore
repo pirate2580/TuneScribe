@@ -11,3 +11,19 @@ package-lock.json
 
 # Ignore node modules directory
 node_modules/
+
+training_data.pkl
+
+training_label.pkl
+
+validation_data.pkl
+
+validation_label.pkl
+
+train_x.npy
+
+train_y.npy
+
+val_x.npy
+
+val_y.npy

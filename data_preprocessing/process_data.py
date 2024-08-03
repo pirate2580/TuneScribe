@@ -7,8 +7,9 @@ import numpy as np
 import pandas as pd
 import os
 import librosa
+import pickle
 
-def generate_x(file_path: str, sample_rate: int = 11025, max_time: int = 1200, n_fft: int = 4096, hop_length: int = 2048, n_mels: int = 128) -> dict:
+def generate_x(file_path: str, sample_rate: int = 11025, n_fft: int = 4096, max_time: int = 1200, hop_length: int = 2048, n_mels: int = 128) -> dict:
   """
     Generate Mel spectrogram data from WAV files in a given directory.
     
@@ -32,10 +33,11 @@ def generate_x(file_path: str, sample_rate: int = 11025, max_time: int = 1200, n
     wav_file_path = os.path.join(file_path, wav_file)
 
     audio_data, sr = librosa.load(wav_file_path, sr=sample_rate)  # audio song loaded and processed at 11025 Hz
-    padding_length = max_time * sr - len(audio_data)              # padding data to 20 minutes
+    padding_length = max_time * sr - len(audio_data)              # padding data to 20 minutes unless another time (in secs) is specified
     padded_audio_data = np.pad(audio_data, (0, padding_length), 'constant')
     mel_spectrogram = librosa.feature.melspectrogram(y=padded_audio_data, sr=sr, n_fft=n_fft, hop_length=hop_length, n_mels=n_mels) # creating a mel spectrogram of the song data, 4096 window size with 11025 sample rate is ~0.33 seconds of audio data
-    x_data[wav_file[0:len(wav_file) - 4]] = mel_spectrogram
+    # print(mel_spectrogram.shape)
+    x_data[wav_file[0:len(wav_file) - 4]] = [mel_spectrogram, padding_length]
 
     print(f"song {wav_file} has been processed")
   
@@ -43,8 +45,8 @@ def generate_x(file_path: str, sample_rate: int = 11025, max_time: int = 1200, n
 
 def generate_y(file_path: str, max_time: int = 1200) -> dict:
   """Function to generate ouput labels for either training or validation data"""
-  new_time_steps = 6460
-  downsample_factor = max_time * 44100 / new_time_steps
+  new_time_steps = 6460                                 # hardcoded, should be .shape[1] of any np arrays from x_data
+  downsample_factor = max_time * 44100 / new_time_steps # original time from labels csv file is in frame number where sampled at 44.1 kHz, need downsampling
 
   files = os.listdir(file_path)
   csv_files = [f for f in files if f.endswith('.csv')]
@@ -60,9 +62,10 @@ def generate_y(file_path: str, max_time: int = 1200) -> dict:
     for index, row in df.iterrows():
       start_time, end_time, note = row['start_time'], row['end_time'], row['note']
 
-      start_time = round(start_time / downsample_factor, 1)       # downsample time, losing temporal resolution, to fit labels to data
-      end_time = round(end_time / downsample_factor, 1)
-      audio_label[int(start_time):int(end_time), int(note)-20] = 1
+      start_time = int(start_time) // downsample_factor   # when downsampled a lot like this, there will be rounding errors and won't sound like original exactly :(
+      end_time = int(end_time) // downsample_factor
+      audio_label[int(start_time):int(end_time), int(note)] = 1
+
     print(f"label for song {csv_file} is processed")
     y_data[csv_file[0:len(csv_file) - 4]] = audio_label
   
@@ -71,32 +74,22 @@ def generate_y(file_path: str, max_time: int = 1200) -> dict:
 
 if __name__ == '__main__':
 
+  # main block generates data/labels and saves to pickle files to be prepared in np arrays for distributed training on AWS ec2
+
   training_data = generate_x('./raw_data/musicnet/train_data')
   training_label = generate_y('./raw_data/musicnet/train_labels')
-  print(training_data['2177'].shape)
-  print(training_label['2177'].shape)
+  validation_data = generate_x('./raw_data/musicnet/test_data')
+  validation_label = generate_y('./raw_data/musicnet/test_labels')
 
+  with open('./pickle_data/training_data.pkl', 'wb') as f:
+    pickle.dump(training_data, f)
 
+  with open('./pickle_data/training_label.pkl', 'wb') as f:
+    pickle.dump(training_label, f)
 
-# # List all files in the directory
-# files = os.listdir('./musicnet/train_data')
-# # Filter the list to include only CSV files
-# wav_files = [f for f in files if f.endswith('.wav')]
+  with open('./pickle_data/validation_data.pkl', 'wb') as f:
+    pickle.dump(validation_data, f)
 
-
-# for i in range (len(wav_files)):
-#   wav_file = wav_files[i]
-#   file_path = os.path.join('./musicnet/train_data', wav_file)
-#   audio_data, sr = librosa.load(file_path, sr=sample_rate)  # audio song processed at 11025 Hz
-#   # print(audio_data.shape)
-#   padding_length = max_time * sr - len(audio_data)
-#   # print(padding_length)
-
-#   pickle_file_path = os.path.join('./musicnet_pickle', wav_file[0:len(wav_file) - 3] + 'pkl')
-#   padded_audio_data = np.pad(audio_data, (0, padding_length), 'constant')
-#   # print(padded_audio_data.shape)
-#   mel_spectrogram = librosa.feature.melspectrogram(y=padded_audio_data, sr=sr, n_fft=4096, hop_length=2048, n_mels=88)
-#   # print(mel_spectrogram.shape)
-#   with open(pickle_file_path, 'wb') as f:
-#       pickle.dump((mel_spectrogram, padding_length), f)
-#   print(i)
+  with open('./pickle_data/validation_label.pkl', 'wb') as f:
+    pickle.dump(validation_label, f)
+#   # print(training_data['2177'])
