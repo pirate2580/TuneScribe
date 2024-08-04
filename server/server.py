@@ -9,13 +9,13 @@ app = Flask(__name__)
 # Load the model
 model = tf.keras.models.load_model('./model_weights/model.h5')
 
-def preprocess_audio(file):
+def preprocess_audio(file_stream):
     """
     Preprocesses the audio file for prediction.
     Load the wav file, extract features and return them.
     """
     # Load the audio file as a waveform
-    audio_data, sr = librosa.load(file, sr=11025)
+    audio_data, sr = librosa.load(io.BytesIO(file_stream.read()), sr=11025)
     padding_length = 1200 * sr - len(audio_data)
     padded_audio_data = np.pad(audio_data, (0, padding_length), 'constant')
 
@@ -30,7 +30,7 @@ def preprocess_audio(file):
     input_data = np.reshape(input_data, (input_data.shape[0], input_data.shape[2], input_data.shape[1], 1))
     return input_data
 
-@app.route('/predict', methods=['POST'])
+@app.route('/predict', methods=['POST', 'GET'])
 def predict():
     if 'file' not in request.files:
         return jsonify({'error': 'No file part'}), 400
