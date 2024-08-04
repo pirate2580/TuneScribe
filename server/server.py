@@ -180,7 +180,7 @@ def create_midi_file(binary_y, audio_length):
                 # If state changed, create a note on/off message
                 velocity = 64 if state == 1 else 0
                 message_type = 'note_on' if state == 1 else 'note_off'
-                track.append(Message(message_type, note=note + 21, velocity=velocity, time=int(time_per_timestep)))
+                track.append(Message(message_type, note=note, velocity=velocity, time=int(time_per_timestep)))
                 current_note_states[note] = state
     print(f"MIDI file created with {len(track)} messages")
     return mid
