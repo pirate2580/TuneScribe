@@ -25,6 +25,50 @@ def train(train_x, train_y, val_x, val_y):
   from tensorflow.keras import initializers
   from tensorflow.keras import callbacks
 
+  # def unet(input_shape):
+  #   inputs = layers.Input(input_shape)
+
+  #   # Contracting path
+  #   c1 = layers.Conv2D(64, (3, 3), activation='relu', kernel_initializer=tf.keras.initializers.HeNormal(), padding='same')(inputs)
+  #   c1 = layers.BatchNormalization()(c1)
+  #   c1 = layers.Conv2D(64, (3, 3), activation='relu', kernel_initializer=tf.keras.initializers.HeNormal(), padding='same')(c1)
+  #   c1 = layers.BatchNormalization()(c1)
+  #   p1 = layers.MaxPooling2D((2, 2))(c1)
+  #   # p1 = layers.Dropout(0.2)(p1)
+
+  #   c2 = layers.Conv2D(128, (3, 3), activation='relu', kernel_initializer=tf.keras.initializers.HeNormal(), padding='same')(p1)
+  #   c2 = layers.BatchNormalization()(c2)
+  #   c2 = layers.Conv2D(128, (3, 3), activation='relu', kernel_initializer=tf.keras.initializers.HeNormal(), padding='same')(c2)
+  #   c2 = layers.BatchNormalization()(c2)
+  #   p2 = layers.MaxPooling2D((2, 2))(c2)
+  #   # p2 = layers.Dropout(0.2)(p2)
+
+  #   # Bottleneck
+  #   c3 = layers.Conv2D(256, (3, 3), activation='relu', kernel_initializer=tf.keras.initializers.HeNormal(), padding='same')(p2)
+  #   c3 = layers.BatchNormalization()(c3)
+  #   c3 = layers.Conv2D(256, (3, 3), activation='relu', kernel_initializer=tf.keras.initializers.HeNormal(), padding='same')(c3)
+  #   c3 = layers.BatchNormalization()(c3)
+
+  #   # Expansive path
+  #   u4 = layers.Conv2DTranspose(128, (2, 2), strides=(2, 2), kernel_initializer=tf.keras.initializers.HeNormal(), padding='same')(c3)
+  #   u4 = layers.Concatenate()([u4, c2])
+  #   c4 = layers.Conv2D(128, (3, 3), activation='relu', kernel_initializer=tf.keras.initializers.HeNormal(), padding='same')(u4)
+  #   c4 = layers.BatchNormalization()(c4)
+  #   c4 = layers.Conv2D(128, (3, 3), activation='relu', kernel_initializer=tf.keras.initializers.HeNormal(), padding='same')(c4)
+  #   c4 = layers.BatchNormalization()(c4)
+
+  #   u5 = layers.Conv2DTranspose(64, (2, 2), strides=(2, 2), kernel_initializer=tf.keras.initializers.HeNormal(), padding='same')(c4)
+  #   u5 = layers.Concatenate()([u5, c1])
+  #   c5 = layers.Conv2D(64, (3, 3), activation='relu', kernel_initializer=tf.keras.initializers.HeNormal(), padding='same')(u5)
+  #   c5 = layers.BatchNormalization()(c5)
+  #   c5 = layers.Conv2D(64, (3, 3), activation='relu', kernel_initializer=tf.keras.initializers.HeNormal(), padding='same')(c5)
+  #   c5 = layers.BatchNormalization()(c5)
+
+  #   outputs = layers.Conv2D(1, (1, 1), activation='sigmoid')(c5)
+
+
+  #   model = tf.keras.Model(inputs=[inputs], outputs=[outputs])
+  #   return model
   def unet(input_shape):
     inputs = layers.Input(input_shape)
 
@@ -34,43 +78,53 @@ def train(train_x, train_y, val_x, val_y):
     c1 = layers.Conv2D(64, (3, 3), activation='relu', kernel_initializer=tf.keras.initializers.HeNormal(), padding='same')(c1)
     c1 = layers.BatchNormalization()(c1)
     p1 = layers.MaxPooling2D((2, 2))(c1)
-    # p1 = layers.Dropout(0.2)(p1)
 
     c2 = layers.Conv2D(128, (3, 3), activation='relu', kernel_initializer=tf.keras.initializers.HeNormal(), padding='same')(p1)
     c2 = layers.BatchNormalization()(c2)
     c2 = layers.Conv2D(128, (3, 3), activation='relu', kernel_initializer=tf.keras.initializers.HeNormal(), padding='same')(c2)
     c2 = layers.BatchNormalization()(c2)
     p2 = layers.MaxPooling2D((2, 2))(c2)
-    # p2 = layers.Dropout(0.2)(p2)
 
-    # Bottleneck
     c3 = layers.Conv2D(256, (3, 3), activation='relu', kernel_initializer=tf.keras.initializers.HeNormal(), padding='same')(p2)
     c3 = layers.BatchNormalization()(c3)
     c3 = layers.Conv2D(256, (3, 3), activation='relu', kernel_initializer=tf.keras.initializers.HeNormal(), padding='same')(c3)
     c3 = layers.BatchNormalization()(c3)
+    p3 = layers.MaxPooling2D((2, 2))(c3)
+
+    # Bottleneck
+    c4 = layers.Conv2D(512, (3, 3), activation='relu', kernel_initializer=tf.keras.initializers.HeNormal(), padding='same')(p3)
+    c4 = layers.BatchNormalization()(c4)
+    c4 = layers.Conv2D(512, (3, 3), activation='relu', kernel_initializer=tf.keras.initializers.HeNormal(), padding='same')(c4)
+    c4 = layers.BatchNormalization()(c4)
 
     # Expansive path
-    u4 = layers.Conv2DTranspose(128, (2, 2), strides=(2, 2), kernel_initializer=tf.keras.initializers.HeNormal(), padding='same')(c3)
-    u4 = layers.Concatenate()([u4, c2])
-    c4 = layers.Conv2D(128, (3, 3), activation='relu', kernel_initializer=tf.keras.initializers.HeNormal(), padding='same')(u4)
-    c4 = layers.BatchNormalization()(c4)
-    c4 = layers.Conv2D(128, (3, 3), activation='relu', kernel_initializer=tf.keras.initializers.HeNormal(), padding='same')(c4)
-    c4 = layers.BatchNormalization()(c4)
-
-    u5 = layers.Conv2DTranspose(64, (2, 2), strides=(2, 2), kernel_initializer=tf.keras.initializers.HeNormal(), padding='same')(c4)
-    u5 = layers.Concatenate()([u5, c1])
-    c5 = layers.Conv2D(64, (3, 3), activation='relu', kernel_initializer=tf.keras.initializers.HeNormal(), padding='same')(u5)
+    u5 = layers.Conv2DTranspose(256, (2, 2), strides=(2, 2), kernel_initializer=tf.keras.initializers.HeNormal(), padding='same')(c4)
+    u5 = layers.Concatenate()([u5, c3])
+    c5 = layers.Conv2D(256, (3, 3), activation='relu', kernel_initializer=tf.keras.initializers.HeNormal(), padding='same')(u5)
     c5 = layers.BatchNormalization()(c5)
-    c5 = layers.Conv2D(64, (3, 3), activation='relu', kernel_initializer=tf.keras.initializers.HeNormal(), padding='same')(c5)
+    c5 = layers.Conv2D(256, (3, 3), activation='relu', kernel_initializer=tf.keras.initializers.HeNormal(), padding='same')(c5)
     c5 = layers.BatchNormalization()(c5)
 
-    outputs = layers.Conv2D(1, (1, 1), activation='sigmoid')(c5)
+    u6 = layers.Conv2DTranspose(128, (2, 2), strides=(2, 2), kernel_initializer=tf.keras.initializers.HeNormal(), padding='same')(c5)
+    u6 = layers.Concatenate()([u6, c2])
+    c6 = layers.Conv2D(128, (3, 3), activation='relu', kernel_initializer=tf.keras.initializers.HeNormal(), padding='same')(u6)
+    c6 = layers.BatchNormalization()(c6)
+    c6 = layers.Conv2D(128, (3, 3), activation='relu', kernel_initializer=tf.keras.initializers.HeNormal(), padding='same')(c6)
+    c6 = layers.BatchNormalization()(c6)
 
+    u7 = layers.Conv2DTranspose(64, (2, 2), strides=(2, 2), kernel_initializer=tf.keras.initializers.HeNormal(), padding='same')(c6)
+    u7 = layers.Concatenate()([u7, c1])
+    c7 = layers.Conv2D(64, (3, 3), activation='relu', kernel_initializer=tf.keras.initializers.HeNormal(), padding='same')(u7)
+    c7 = layers.BatchNormalization()(c7)
+    c7 = layers.Conv2D(64, (3, 3), activation='relu', kernel_initializer=tf.keras.initializers.HeNormal(), padding='same')(c7)
+    c7 = layers.BatchNormalization()(c7)
+
+    outputs = layers.Conv2D(1, (1, 1), activation='sigmoid')(c7)
 
     model = tf.keras.Model(inputs=[inputs], outputs=[outputs])
     return model
   
-  def create_weight_map(y_train, weight_for_1=16, weight_for_0=1):
+  def create_weight_map(y_train, weight_for_1=14, weight_for_0=1):
     weight_map = np.ones(y_train.shape)
     weight_map[y_train == 1] = weight_for_1  # Increase weight for class 1
     weight_map[y_train == 0] = weight_for_0  # Normal weight for class 0

@@ -8,3 +8,4 @@ mido
 keras
 modal
 flask
+flask-cors
