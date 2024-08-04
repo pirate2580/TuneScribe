@@ -5,3 +5,6 @@ librosa
 IPython
 matplotlib
 mido
+keras
+modal
+flask
