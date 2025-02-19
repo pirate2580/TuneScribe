@@ -30,7 +30,7 @@ const Note: React.FC<NoteProps> = ({ noteNum, color, style }) => {
         ${pressed ? "bg-amber-200" : tailwindColors[color]}
         ${color === "white"? "h-[100px] w-[20px]": "h-[70px] w-[14px]"}`}
     >
-      <span className={`text-[8px] text-black ${color === "white"? "text-black": "text-white"}` }>
+      <span className={`font-bold text-[6px] text-black ${color === "white"? "text-black": "text-white"}` }>
         {pianoNoteMap[noteNum]}
       </span>
     </div>

@@ -1,12 +1,18 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
 import MidiBoard from './midi/MidiBoard'
-// import Note from "./midi/Note"
+import Card from './Card';
+
 function App() {
   return (
-    <div className="App h-screen w-screen flex justify-center items-center">
-        <MidiBoard/>
+    <div className="App h-screen w-screen flex relative bg-black">
+      <p className="absolute top-[-40px] left-[50%] translate-x-[-50%] text-white text-[150px] font-extrabold">
+        MIDI.AI
+      </p>
+
+      <Card/>
+       
+      <MidiBoard className="absolute top-[210px] left-[400px]" />
     </div>
   );
 }
