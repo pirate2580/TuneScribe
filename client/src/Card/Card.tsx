@@ -1,4 +1,5 @@
 import React from 'react';
+import UploadButton from './UploadButton';
 
 const Card: React.FC = () => {
   return(
@@ -34,10 +35,7 @@ const Card: React.FC = () => {
            </li>
          </ol>
 
-         
-         <button className=" bg-blue-950 rounded-md ">
-          Drop or Upload a new file here (.wav, mp3, etc)
-          </button>
+        <UploadButton/>
       </div>
     </>
   )

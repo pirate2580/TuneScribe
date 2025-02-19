@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import Note from './Note'
+import SeekBar from "./SeekBar";
 
 interface MidiBoardProps {
   className?: string;
@@ -54,36 +55,40 @@ const MidiBoard: React.FC<MidiBoardProps> = ({className}) => {
   });
 
   return (
-    <div className={`${className || ''} relative w-[1040px] h-[650px] bg-gradient-to-t from-[#505cb9] to-[#140e52] flex items-end`}>
-      {/* White keys */}
-      <div className="flex">
-        {Array.from({ length: 52 }).map((_, i) => {
-          // Left position is i * 20
-          const pos = i * 20;
-          const noteNum = noteNumForPos[pos]; // from our lookup
-          return <Note key={i} noteNum={noteNum} color="white" />;
-        })}
-      </div>
+    <div>
+      <div className={`${className || ''} relative w-[1040px] h-[650px] bg-gradient-to-t from-[#505cb9] to-[#140e52] flex items-end`}>
+        {/* piano roll */}
+        <div>
+            <div className="flex mb-[40px]">
+              {Array.from({ length: 52 }).map((_, i) => {
+                // Left position is i * 20
+                const pos = i * 20;
+                const noteNum = noteNumForPos[pos]; // from our lookup
+                return <Note key={i} noteNum={noteNum} color="white" />;
+              })}
+            </div>
 
-      {/* Black keys */}
-      {blackKeyPositions.map((leftPos, i) => {
-        const noteNum = noteNumForPos[leftPos];
-        return (
-          <Note
-            key={`black-${i}`}
-            noteNum={noteNum}
-            color="black"
-            style={{
-              position: "absolute",
-              bottom: "30px",
-              left: leftPos,
-              // width: "16px",
-              // height: "70px",
-              zIndex: 20,
-            }}
-          />
-        );
-      })}
+            {blackKeyPositions.map((leftPos, i) => {
+              const noteNum = noteNumForPos[leftPos];
+              return (
+                <Note
+                  key={`black-${i}`}
+                  noteNum={noteNum}
+                  color="black"
+                  style={{
+                    position: "absolute",
+                    bottom: "72px",
+                    left: leftPos,
+                    zIndex: 20,
+                  }}
+                />
+              );
+            })}
+          </div>
+        </div>
+        {/* seek bar */}
+        <SeekBar/>
+
     </div>
   );
 }
