@@ -54,7 +54,7 @@ const MidiBoard: React.FC<MidiBoardProps> = ({className}) => {
   });
 
   return (
-    <div className={`${className || ''} relative w-[1040px] h-[600px] bg-gradient-to-t from-[#505cb9] to-[#140e52] flex items-end`}>
+    <div className={`${className || ''} relative w-[1040px] h-[650px] bg-gradient-to-t from-[#505cb9] to-[#140e52] flex items-end`}>
       {/* White keys */}
       <div className="flex">
         {Array.from({ length: 52 }).map((_, i) => {

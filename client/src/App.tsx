@@ -12,7 +12,7 @@ function App() {
 
       <Card/>
        
-      <MidiBoard className="absolute top-[210px] left-[400px]" />
+      <MidiBoard className="absolute top-[160px] left-[400px]" />
     </div>
   );
 }
