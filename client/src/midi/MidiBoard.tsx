@@ -13,6 +13,10 @@ const blackKeyOffsetsPerOctave = [0.5, 2.5, 3.5, 5.5, 6.5];
 const MidiBoard: React.FC<MidiBoardProps> = ({className}) => {
 
   const { midiArray } = useMidi();
+
+  if (midiArray) {
+    console.log("MIDI Array Shape:", [midiArray.length, midiArray[0]?.length]);
+  }
   
   const whiteKeyPositions: number[] = [];
   const blackKeyPositions: number[] = [];
