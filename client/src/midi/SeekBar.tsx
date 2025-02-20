@@ -46,7 +46,7 @@ const SeekBar: React.FC = () => {
     const newProgress = (clickX / rect.width) * 100;
     setProgress(newProgress);
 
-    setProgress(newProgress);
+    // setProgress(newProgress);
     setCurrentIndex(Math.round((newProgress / 100) * totalLength));
   };
 
