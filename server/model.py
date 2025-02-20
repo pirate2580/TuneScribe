@@ -1,9 +1,6 @@
-"""
-Python script contains model architecture and loads it into a format acceptable by tensorflow.js
-"""
-
-import tensorflowjs as tfjs
 import tensorflow as tf
+import numpy as np
+import io
 from tensorflow.keras import layers
 from tensorflow.keras import losses
 from tensorflow.keras import optimizers
@@ -42,11 +39,3 @@ def convnet():
 
   model = tf.keras.Model(inputs=[input_layer], outputs=[outputs])
   return model
-
-model = convnet()
-
-# Load the model
-model.load_weights("cnn_model.h5")
-
-# Convert to TensorFlow.js format
-tfjs.converters.save_keras_model(model, "tfjs_model")
