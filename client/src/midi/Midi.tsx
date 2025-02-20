@@ -21,7 +21,7 @@ const Midi: React.FC<MidiProps> = ({ row, midiPressed, boardPos, top }) => {
         return (
           <div
             key={noteNum}
-            className={`flex justify-center items-end bg-transparent ${midiPressed[21 + noteNum] === 1? "bg-purple-600": "bg-transparent"}`}
+            className={`flex justify-center items-end ${midiPressed[21 + noteNum] === 1? "bg-purple-600": "bg-transparent"}`}
             style={{
               position: "absolute",
               width: isWhite ? "20px" : "14px",
