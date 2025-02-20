@@ -1,7 +1,8 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import { useMidi } from "./MidiContext";
 import Note from './Note'
 import SeekBar from "./SeekBar";
+import Midi from "./Midi";
 
 interface MidiBoardProps {
   className?: string;
@@ -14,9 +15,19 @@ const MidiBoard: React.FC<MidiBoardProps> = ({className}) => {
 
   const { midiArray } = useMidi();
 
-  if (midiArray) {
-    console.log("MIDI Array Shape:", [midiArray.length, midiArray[0]?.length]);
-  }
+  const {currentIndex, setCurrentIndex} = useMidi();
+
+  // if (midiArray) {
+  //   console.log("MIDI Array Shape:", [midiArray.length, midiArray[0]?.length]);
+  // }
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentIndex(currentIndex + 1); // ✅ Correctly inferred type
+    }, 232); // ✅ Runs every 232ms
+  
+    return () => clearInterval(interval); // ✅ Cleanup function
+  }, [setCurrentIndex]); // ✅ Dependency array
   
   const whiteKeyPositions: number[] = [];
   const blackKeyPositions: number[] = [];
@@ -40,38 +51,47 @@ const MidiBoard: React.FC<MidiBoardProps> = ({className}) => {
   blackKeyPositions.push(49.5 * 20);
 
   // Combine positions into one array
-  const allKeys: number[] = [];
+  type KeyTuple = [number, "white" | "black"];
+  const allKeys: KeyTuple[] = [];
 
   // push White keys
   for (let i = 0; i < 52; i++) {
-    allKeys.push(i * 20);
+    allKeys.push([i * 20, "white"]);
   }
   // push Black keys
   blackKeyPositions.forEach((pos) => {
-    allKeys.push(pos);
+    allKeys.push([pos, "black"]);
   });
 
   // Sort them by horizontal position (left to right)
-  allKeys.sort((a, b) => a - b);
+  allKeys.sort((a, b) => a[0] - b[0]);
 
   // Assign note numbers in ascending order of positions
   // then store them in a lookup (pos → noteNum).
-  const noteNumForPos: Record<number, number> = {};
+  const noteNumForPos: Record<number, KeyTuple> = {};
   allKeys.forEach((key, index) => {
-    noteNumForPos[key] = index; // index goes 0..87
+    noteNumForPos[key[0]] = [index, key[1]]; // index goes 0..87
   });
 
+  console.log(noteNumForPos)
+
   return (
-    <div>
+    <div className="flex relative">
+      {/* <Midi boardPos={noteNumForPos} top={586}/>
+      <Midi boardPos={noteNumForPos} top={628}/> */}
+      {Array.from({ length: 12 }).map((_, i) => (
+        <Midi key={i} row= {i} boardPos={noteNumForPos} top={628 - i * 42} />
+      ))}
+
+
       <div className={`${className || ''} relative w-[1040px] h-[650px] bg-gradient-to-t from-[#505cb9] to-[#140e52] flex items-end`}>
-        {/* piano roll */}
         <div>
             <div className="flex mb-[40px]">
               {Array.from({ length: 52 }).map((_, i) => {
                 // Left position is i * 20
                 const pos = i * 20;
                 const noteNum = noteNumForPos[pos]; // from our lookup
-                return <Note key={i} noteNum={noteNum} color="white" />;
+                return <Note key={i} noteNum={noteNum[0]} color="white" />;
               })}
             </div>
 
@@ -80,7 +100,7 @@ const MidiBoard: React.FC<MidiBoardProps> = ({className}) => {
               return (
                 <Note
                   key={`black-${i}`}
-                  noteNum={noteNum}
+                  noteNum={noteNum[0]}
                   color="black"
                   style={{
                     position: "absolute",
@@ -93,7 +113,6 @@ const MidiBoard: React.FC<MidiBoardProps> = ({className}) => {
             })}
           </div>
         </div>
-        {/* seek bar */}
         <SeekBar/>
 
     </div>

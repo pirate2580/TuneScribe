@@ -26,9 +26,9 @@ const Note: React.FC<NoteProps> = ({ noteNum, color, style }) => {
       onMouseDown={() => setPressed(true)}
       onMouseUp={() => setPressed(false)}
       className={`
-        flex items-end justify-center border border-black h-[100px] w-[20px] z-10 
+        flex items-end justify-center border border-black z-10 
         ${pressed ? "bg-amber-200" : tailwindColors[color]}
-        ${color === "white"? "h-[100px] w-[20px]": "h-[70px] w-[15px]"}`}
+        ${color === "white"? "h-[100px] w-[20px]": "h-[70px] w-[14px]"}`}
     >
       <span className={`font-bold text-[6px] text-black ${color === "white"? "text-black": "text-white"}` }>
         {pianoNoteMap[noteNum]}

@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import { MidiProvider } from "./Midi/MidiContext";
-import MidiBoard from './Midi/MidiBoard'
+import MidiBoard from './Midi/Board';
 import Card from './Card/Card';
 
 function App() {

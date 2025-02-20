@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
-
+import React, { use, useState } from 'react';
+import { useMidi } from "./MidiContext";
 const SeekBar: React.FC = () => {
-  const [isPlaying, setIsPlaying] = useState(false);
+  // const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
 
+  const {playContext, setPlayContext} = useMidi();
+
   const handlePlayPause = () => {
-    setIsPlaying(!isPlaying);
+    // setIsPlaying(!isPlaying);
+    setPlayContext(!playContext);
   };
 
   // When the user clicks on the progress bar, update the "progress" state
@@ -25,7 +28,7 @@ const SeekBar: React.FC = () => {
         onClick={handlePlayPause}
         className="py-0.5 w-[60px] bg-red-500 text-white rounded-md"
       >
-        {isPlaying ? 'Pause' : 'Play'}
+        {playContext ? 'Pause' : 'Play'}
       </button>
       
       {/* Progress Bar Container */}
