@@ -6,12 +6,14 @@ interface MidiProps {
   row: number
   boardPos: Record<number, KeyTuple>;
   top: number; 
+  midiPressed: number[];
 }
 
-const Midi: React.FC<MidiProps> = ({ row, boardPos, top }) => {
+const Midi: React.FC<MidiProps> = ({ row, midiPressed, boardPos, top }) => {
+  // console.log(`${row} ${midiPressed}`)
   return (
     <div
-      className="absolute z-50 left-[400px] w-[1040px] h-[42px]"
+      className="absolute z-40 left-[400px] w-[1040px] h-[42px]"
       style={{ top: `${top}px` }} 
     >
       {Object.entries(boardPos).map(([pos, [noteNum, color]]) => {
@@ -19,7 +21,7 @@ const Midi: React.FC<MidiProps> = ({ row, boardPos, top }) => {
         return (
           <div
             key={noteNum}
-            className="flex justify-center items-end bg-transparent"
+            className={`flex justify-center items-end bg-transparent ${midiPressed[21 + noteNum] === 1? "bg-purple-600": "bg-transparent"}`}
             style={{
               position: "absolute",
               width: isWhite ? "20px" : "14px",

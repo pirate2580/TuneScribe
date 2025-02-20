@@ -6,10 +6,11 @@ const UploadButton: React.FC = () => {
   const [file, setFile] = useState<File | null>(null);
   const [isSubmitClicked, setIsSubmitClicked] = useState(false); // <-- separate state for submit button click
   const [isLoading, setIsLoading] = useState(false);
-  const { setMidiArray } = useMidi();
+  const { setMidiArray, setCurrentIndex, setTotalLength } = useMidi();
 
   // Handle file selection
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log("adfj;kladfs;kjads test")
     if (e.target.files?.length) {
       const selectedFile = e.target.files[0];
       if (
@@ -51,6 +52,7 @@ const UploadButton: React.FC = () => {
 
       if (Array.isArray(data.midi_array)) {
         setMidiArray(data.midi_array); // Store in global context
+        setTotalLength(data.midi_array[0]?.length || 0);
         // 1) SUCCESS ALERT
         alert("File successfully uploaded!");
       } else {
@@ -61,6 +63,7 @@ const UploadButton: React.FC = () => {
       alert("Error during upload");
     } finally {
       setIsLoading(false);
+      setCurrentIndex(0);
     }
   };
 
@@ -78,7 +81,7 @@ const UploadButton: React.FC = () => {
       {/* Button to open file picker -- stays blue, does NOT turn green on click */}
       <button
         onClick={() => fileInputRef.current?.click()}
-        className="overflow-hidden h-[80px] text-[20px] font-extrabold rounded-md transition-colors duration-300 bg-blue-950"
+        className="z-50 overflow-hidden h-[80px] text-[20px] font-extrabold rounded-md transition-colors duration-300 bg-blue-950"
       >
         {file ? `File selected: ${file.name}` : "Upload a new file here (.wav, mp3, etc)"}
       </button>
@@ -86,7 +89,7 @@ const UploadButton: React.FC = () => {
       {/* Submit button -- flashes green when clicked, shows "Loading..." when isLoading */}
       <button
         onClick={handleUpload}
-        className={`overflow-hidden h-[80px] text-[20px] font-extrabold rounded-md transition-colors duration-300 
+        className={`z-50 overflow-hidden h-[80px] text-[20px] font-extrabold rounded-md transition-colors duration-300 
           ${isSubmitClicked ? "bg-green-500" : "bg-blue-950"}
         `}
       >

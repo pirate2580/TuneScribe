@@ -16,18 +16,21 @@ const MidiBoard: React.FC<MidiBoardProps> = ({className}) => {
   const { midiArray } = useMidi();
 
   const {currentIndex, setCurrentIndex} = useMidi();
-
-  // if (midiArray) {
-  //   console.log("MIDI Array Shape:", [midiArray.length, midiArray[0]?.length]);
-  // }
+  const {playContext} = useMidi();
 
   useEffect(() => {
+    if (!playContext) return;
+    // console.log(currentIndex);
     const interval = setInterval(() => {
-      setCurrentIndex(currentIndex + 1); // ✅ Correctly inferred type
-    }, 232); // ✅ Runs every 232ms
+      setCurrentIndex((prevIndex: number) => prevIndex + 1);
+    }, 232); 
   
-    return () => clearInterval(interval); // ✅ Cleanup function
-  }, [setCurrentIndex]); // ✅ Dependency array
+    return () => clearInterval(interval);
+  }, [playContext, setCurrentIndex]);
+
+  useEffect(() => {
+    console.log(currentIndex);
+  }, [currentIndex]);
   
   const whiteKeyPositions: number[] = [];
   const blackKeyPositions: number[] = [];
@@ -73,14 +76,10 @@ const MidiBoard: React.FC<MidiBoardProps> = ({className}) => {
     noteNumForPos[key[0]] = [index, key[1]]; // index goes 0..87
   });
 
-  console.log(noteNumForPos)
-
   return (
     <div className="flex relative">
-      {/* <Midi boardPos={noteNumForPos} top={586}/>
-      <Midi boardPos={noteNumForPos} top={628}/> */}
       {Array.from({ length: 12 }).map((_, i) => (
-        <Midi key={i} row= {i} boardPos={noteNumForPos} top={628 - i * 42} />
+        <Midi key={i} row= {i} midiPressed = {midiArray ? midiArray[currentIndex + i] || [] : []} boardPos={noteNumForPos} top={628 - i * 42} />
       ))}
 
 

@@ -4,7 +4,7 @@ import UploadButton from './UploadButton';
 const Card: React.FC = () => {
   return(
     <>
-      <div className="bg-slate-800 absolute h-[650px] top-[160px] left-[200px] max-w-[380px] translate-x-[-50%] text-white text-[16px] font-bold space-y-2 rounded-2xl shadow-lg p-3 flex flex-col justify-between">
+      <div className="bg-slate-800 absolute h-[650px] top-[160px] left-[200px] max-w-[380px] translate-x-[-50%] text-white text-[16px] font-bold space-y-2 rounded-2xl shadow-lg p-3 flex flex-col justify-between z-[999]">
         <p className="text-left mb-4">
           <p className="text-left mb-4">
             Have you ever just heard an instrumental song and wanted to learn it on piano? <br/><br/>

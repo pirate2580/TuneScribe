@@ -4,7 +4,9 @@ interface MidiContextType {
   midiArray: number[][] | null;
   setMidiArray: (midi: number[][] | null) => void;
   currentIndex: number;
-  setCurrentIndex: (index: number) => void;
+  setCurrentIndex: React.Dispatch<React.SetStateAction<number>>;
+  totalLength: number;
+  setTotalLength: React.Dispatch<React.SetStateAction<number>>;
   playContext: boolean;
   setPlayContext: React.Dispatch<React.SetStateAction<boolean>>;
 }
@@ -17,11 +19,11 @@ export const MidiProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [midiArray, setMidiArray] = useState<number[][] | null>(null);
 
   const [currentIndex, setCurrentIndex] = useState<number>(0);
-
+  const [totalLength, setTotalLength] = useState<number>(0);
   const [playContext, setPlayContext] = useState(false);
 
   return (
-    <MidiContext.Provider value={{ midiArray, setMidiArray, currentIndex, setCurrentIndex, playContext, setPlayContext }}>
+    <MidiContext.Provider value={{ midiArray, setMidiArray, currentIndex, setCurrentIndex, totalLength, setTotalLength, playContext, setPlayContext }}>
       {children}
     </MidiContext.Provider>
   );
