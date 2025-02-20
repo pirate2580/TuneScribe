@@ -28,9 +28,9 @@ const MidiBoard: React.FC<MidiBoardProps> = ({className}) => {
     return () => clearInterval(interval);
   }, [playContext, setCurrentIndex]);
 
-  useEffect(() => {
-    console.log(currentIndex);
-  }, [currentIndex]);
+  // useEffect(() => {
+  //   console.log(currentIndex);
+  // }, [currentIndex]);
   
   const whiteKeyPositions: number[] = [];
   const blackKeyPositions: number[] = [];

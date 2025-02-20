@@ -5,7 +5,7 @@ const SeekBar: React.FC = () => {
   const [progress, setProgress] = useState(0);
 
   const {playContext, setPlayContext, midiArray, currentIndex, setCurrentIndex, totalLength} = useMidi();
-  // console.log(playContext);
+
   const currentIndexRef = useRef(currentIndex);
 
   useEffect(() => {
@@ -50,6 +50,8 @@ const SeekBar: React.FC = () => {
     setCurrentIndex(Math.round((newProgress / 100) * totalLength));
   };
 
+  console.log(currentIndex, totalLength);
+
   return (
     <div className="absolute top-[770px] left-[400px] h-[40px] w-[1040px] bg-gray-800 p-4 flex items-center gap-4">
       {/* Play/Pause Button */}
@@ -68,12 +70,12 @@ const SeekBar: React.FC = () => {
         {/* Filled portion of the bar */}
         <div
           className="absolute top-0 left-0 h-2 bg-red-500"
-          style={{ width: `${progress}%` }}
+          style={{ width: `${Math.min(progress * 100, 100)}%` }}
         />
       </div>
 
       {/* Display current "progress" for reference */}
-      <span className="text-white">{Math.round(progress)}%</span>
+      <span className="text-white">{Math.round(Math.min(progress * 100, 100))}%</span>
     </div>
   );
 };

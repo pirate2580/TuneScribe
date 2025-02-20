@@ -52,7 +52,7 @@ const UploadButton: React.FC = () => {
 
       if (Array.isArray(data.midi_array)) {
         setMidiArray(data.midi_array); // Store in global context
-        setTotalLength(data.midi_array[0]?.length || 0);
+        setTotalLength(data.midi_array?.length || 0);
         // 1) SUCCESS ALERT
         alert("File successfully uploaded!");
       } else {
