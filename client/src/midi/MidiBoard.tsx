@@ -1,4 +1,5 @@
 import React, {useState} from "react";
+import { useMidi } from "./MidiContext";
 import Note from './Note'
 import SeekBar from "./SeekBar";
 
@@ -10,6 +11,8 @@ interface MidiBoardProps {
 const blackKeyOffsetsPerOctave = [0.5, 2.5, 3.5, 5.5, 6.5];
 
 const MidiBoard: React.FC<MidiBoardProps> = ({className}) => {
+
+  const { midiArray } = useMidi();
   
   const whiteKeyPositions: number[] = [];
   const blackKeyPositions: number[] = [];
