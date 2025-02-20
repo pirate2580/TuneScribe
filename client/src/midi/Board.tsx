@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect} from "react";
 import { useMidi } from "./MidiContext";
 import Note from './Note'
 import SeekBar from "./SeekBar";
