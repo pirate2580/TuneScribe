@@ -20,9 +20,15 @@ const MidiBoard: React.FC<MidiBoardProps> = ({className}) => {
 
   useEffect(() => {
     if (!playContext) return;
-    // console.log(currentIndex);
+    // if (midiArray)
+    // console.log(midiArray[currentIndex]);
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex: number) => prevIndex + 1);
+      // setCurrentIndex((prevIndex: number) => prevIndex + 1);
+      if (midiArray) {
+        setCurrentIndex((prevIndex: number) =>
+          prevIndex + 1 >= midiArray.length ? 0 : prevIndex + 1
+        );
+      }
     }, 232); 
   
     return () => clearInterval(interval);
@@ -90,16 +96,26 @@ const MidiBoard: React.FC<MidiBoardProps> = ({className}) => {
                 // Left position is i * 20
                 const pos = i * 20;
                 const noteNum = noteNumForPos[pos]; // from our lookup
-                return <Note key={i} noteNum={noteNum[0]} color="white" />;
+                let isPressed = false;
+                if (midiArray){
+                  isPressed = midiArray[currentIndex][noteNum[0] + 21] == 1;
+                }
+                
+                return <Note key={i} isPressed={isPressed} noteNum={noteNum[0]} color="white" />;
               })}
             </div>
 
             {blackKeyPositions.map((leftPos, i) => {
               const noteNum = noteNumForPos[leftPos];
+              let isPressed = false;
+              if (midiArray) {
+                isPressed = midiArray[currentIndex][noteNum[0] + 21] == 1;
+              }
               return (
                 <Note
                   key={`black-${i}`}
                   noteNum={noteNum[0]}
+                  isPressed={isPressed}
                   color="black"
                   style={{
                     position: "absolute",

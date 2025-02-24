@@ -8,9 +8,13 @@ const SeekBar: React.FC = () => {
 
   const currentIndexRef = useRef(currentIndex);
 
+  // const currentProgressRef = useRef(progress);
+
+  // sets current index ref to current index upon change
   useEffect(() => {
     currentIndexRef.current = currentIndex;
   }, [currentIndex]);
+
 
 
   const handlePlayPause = () => {
@@ -20,16 +24,17 @@ const SeekBar: React.FC = () => {
     // setIsPlaying(!isPlaying);
     // console.log("either play or stop");
     setPlayContext(!playContext);
-    console.log(playContext);
+    // console.log(playContext);
   };
 
+  // useEffect to set new progress, note board sets new index
   useEffect(() => {
     if (!playContext || totalLength === 0) return;
-    console.log("testing seek");
     const interval = setInterval(() => {
       // Always use the latest currentIndex from the ref
-      setProgress((currentIndexRef.current / totalLength));
-    }, 232);
+      setProgress((currentIndexRef.current / totalLength) * 100);
+      // setProgress(currentProgressRef.current)
+    }, 100);  // smaller time for more consistent progress
   
     return () => clearInterval(interval);
   }, [playContext, totalLength, setProgress]);
@@ -43,6 +48,8 @@ const SeekBar: React.FC = () => {
     const rect = bar.getBoundingClientRect();
     // Calculate where the user clicked relative to the bar width
     const clickX = event.clientX - rect.left;
+    // progress
+    // const newProgress = (clickX / rect.width) * 100;
     const newProgress = (clickX / rect.width) * 100;
     setProgress(newProgress);
 
@@ -50,7 +57,7 @@ const SeekBar: React.FC = () => {
     setCurrentIndex(Math.round((newProgress / 100) * totalLength));
   };
 
-  console.log(currentIndex, totalLength);
+  // console.log(currentIndex, totalLength);
 
   return (
     <div className="absolute top-[770px] left-[400px] h-[40px] w-[1040px] bg-gray-800 p-4 flex items-center gap-4">
@@ -70,12 +77,12 @@ const SeekBar: React.FC = () => {
         {/* Filled portion of the bar */}
         <div
           className="absolute top-0 left-0 h-2 bg-red-500"
-          style={{ width: `${Math.min(progress * 100, 100)}%` }}
+          style={{ width: `${Math.min(progress, 100)}%` }}
         />
       </div>
 
       {/* Display current "progress" for reference */}
-      <span className="text-white">{Math.round(Math.min(progress * 100, 100))}%</span>
+      <span className="text-white">{Math.round(Math.min(progress, 100))}%</span>
     </div>
   );
 };

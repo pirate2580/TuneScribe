@@ -3,7 +3,7 @@ import './App.css';
 import { MidiProvider } from "./Midi/MidiContext";
 import MidiBoard from './Midi/Board';
 import Card from './Card/Card';
-
+// import PlayNoteButton from './test_sound';
 function App() {
   return (
     <MidiProvider>
@@ -17,6 +17,7 @@ function App() {
         <MidiBoard className="absolute overflow-hidden top-[160px] left-[400px]" />
     </div>
     </MidiProvider>
+    // <PlayNoteButton/>
   );
 }
 
