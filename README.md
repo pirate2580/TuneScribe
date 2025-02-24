@@ -1,2 +1,3 @@
-# piano_website
-I ran out of time to deploy during reading week gg, self note: heroku doesn't have enough RAM, need AWS or smth
+# TuneScribe
+
+[![Watch the video](https://img.youtube.com/vi/aKqTUwVm9nA/0.jpg)](https://youtu.be/aKqTUwVm9nA)
